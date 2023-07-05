@@ -308,6 +308,9 @@ print('avg f1', f1_all_score)
 acc_score = st.mean(acc_all)
 print('acc_score', acc_score)
 
+auc_roc_both = roc_auc_score(y_true_all, y_pred_all, average = 'micro', labels=[0,1])
+print('auc_score', auc_roc_both)
+
 avg_prec_mean = st.mean(aucpr_all_2)
 print('avg_prec_mean', avg_prec_mean)
 
