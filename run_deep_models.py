@@ -41,16 +41,16 @@ from sklearn.metrics import average_precision_score
 
 def my_model(n_steps, n_features, hid):
     model = Sequential()
-    #model.add(LSTM(50, activation='relu', input_shape=(n_steps, 1))) #LSTM
-    model.add(LSTM(50, activation='relu', return_sequences=True, input_shape=(n_steps, 1))) #stacked LSTM
-    model.add(LSTM(50, activation='relu')) #stacked LSTM
-    #model.add(Bidirectional(LSTM(50, activation='relu'), input_shape=(n_steps,  1))) #Bi-LSTM
+    #model.add(LSTM(hid, activation='relu', input_shape=(n_steps, 1))) #LSTM
+    model.add(LSTM(hid, activation='relu', return_sequences=True, input_shape=(n_steps, 1))) #stacked LSTM
+    model.add(LSTM(hid, activation='relu')) #stacked LSTM
+    #model.add(Bidirectional(LSTM(hid, activation='relu'), input_shape=(n_steps,  1))) #Bi-LSTM
     #model.add(TimeDistributed(Conv1D(filters=64, kernel_size=1, activation='relu'), input_shape=(None, n_steps, 1))) #CNN-LSTM
     #model.add(TimeDistributed(MaxPooling1D(pool_size=2))) #CNN-LSTM
     #model.add(TimeDistributed(Flatten())) #CNN-LSTM
-    #model.add(LSTM(50, activation='relu')) #CNN-LSTM
+    #model.add(LSTM(hid, activation='relu')) #CNN-LSTM
     #model.add(Flatten()) #MLP
-    #model.add(Dense(50, activation='relu')) #MLP
+    #model.add(Dense(hid, activation='relu')) #MLP
     model.add(Dense(1, activation='sigmoid'))
     return model
 
@@ -204,13 +204,13 @@ padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
 X = padded_docs[:]
 Y = labels[:]
 
-output_dim = 8
-
 ## compile the model and train via kfold cross-validation
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 cvscores_acc = []
 cvscores_loss = []
 epc = 100
+output_dim = 8
+hid = 50
 acc_tr_lis = []
 acc_vl_lis = []
 loss_tr_lis = []
@@ -237,7 +237,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
 
 for train, test in kfold.split(X, Y):
-    model = my_model(vocab_size, output_dim, max_length)
+    model = my_model(vocab_size, output_dim, hid)
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     X_train = scaler.fit_transform(X[train])
